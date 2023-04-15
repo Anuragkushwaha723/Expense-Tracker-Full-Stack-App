@@ -9,7 +9,6 @@ async function submitUserInfo(e) {
         if (responseData.status === 201) {
             window.alert(responseData.data.message); //change signup page to login page
         } else {
-            console.log(responseData);
             throw new Error({ message: responseData.data.message });
         }
     } catch (error) {
