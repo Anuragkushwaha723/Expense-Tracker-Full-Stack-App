@@ -8,8 +8,6 @@ async function submitUserInfo(e) {
         let responseData = await axios.post('http://localhost:3000/user/login', userInfo);
         if (responseData.status === 201) {
             window.alert(responseData.data.message); //change signup page to login page
-        } else {
-            throw new Error({ message: responseData.data.message });
         }
     } catch (error) {
         let err = document.getElementById('error');
