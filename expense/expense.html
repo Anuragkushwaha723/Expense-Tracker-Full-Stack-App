@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Expense Tracker App</title>
+</head>
+
+<body>
+    <div class="p-3 mb-2 bg-secondary bg-gradient text-white">
+        <p class="fs-4">Daily Expenses</p>
+    </div>
+    <form onsubmit="submitExpense(event)">
+        <div class="mb-3 m-3">
+            <label for="amount" class="form-label fs-5">Choose Expense Amount : </label>
+            <input type="number" class="form-control" id="amount" required>
+        </div>
+        <div class="mb-3 m-3">
+            <label for="description" class="form-label fs-5">Choose Description : </label>
+            <input type="text" class="form-control" id="description" required>
+        </div>
+        <div class="mb-3 m-3">
+            <label for="category" class="form-label fs-5">Choose a Category : </label>
+            <select class="form-select fs-5" id="category" required>
+                <option value="Fuel">Fuel</option>
+                <option value="Food">Food</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Movie">Movie</option>
+            </select>
+        </div>
+        <div class="mb-3 m-3">
+            <input type="submit" class="btn btn-outline-success fs-5" value="Add Expense">
+        </div>
+    </form>
+    <div id="error">
+
+    </div>
+    <div class="mb-3 m-3">
+        <ul class="list-unstyled fs-5" id="itemList">
+            <!-- <li class="m-1">100-resturant-food<button class="btn btn-outline-danger m-1">Delete</button></li> -->
+        </ul>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="./expense.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</body>
+
+</html>
