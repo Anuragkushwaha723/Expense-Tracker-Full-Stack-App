@@ -1,7 +1,8 @@
 const itemList = document.getElementById('itemList');
+let token = localStorage.getItem('token');
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        let responseData = await axios.get('http://localhost:3000/expense/get-expense');
+        let responseData = await axios.get('http://localhost:3000/expense/get-expense', { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
             for (let i = 0; i < responseData.data.length; i++) {
                 showOutput(responseData.data[i]);
@@ -24,7 +25,7 @@ async function submitExpense(e) {
             description: e.target.description.value,
             category: e.target.category.value
         };
-        let responseData = await axios.post('http://localhost:3000/expense/add-expense', expenseDetails);
+        let responseData = await axios.post('http://localhost:3000/expense/add-expense', expenseDetails, { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
             showOutput(responseData.data);
         }
@@ -56,7 +57,7 @@ function showOutput(data) {
 
 async function removefromscreen(data) {
     try {
-        let responseData = await axios.delete(`http://localhost:3000/expense/delete-expense/${data.id}`);
+        let responseData = await axios.delete(`http://localhost:3000/expense/delete-expense/${data.id}`, { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
             itemList.removeChild(document.getElementById(responseData.data));
         }

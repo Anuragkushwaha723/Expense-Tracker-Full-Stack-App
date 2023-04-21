@@ -8,6 +8,7 @@ async function submitUserInfo(e) {
         let responseData = await axios.post('http://localhost:3000/user/login', userInfo);
         if (responseData.status === 201) {
             window.alert(responseData.data.message); //change signup page to login page
+            localStorage.setItem('token', responseData.data.token);
             window.location.href = '../expense/expense.html';
         }
     } catch (error) {
