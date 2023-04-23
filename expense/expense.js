@@ -69,3 +69,23 @@ async function removefromscreen(data) {
         }, 2000);
     }
 }
+
+document.getElementById('rzp-button1').onclick = async function (e) {
+    let response = await axios.get('http://localhost:3000/purchase/purchasemembership', { headers: { 'Authorization': token } });
+    var options = {
+        "key": response.data.key_id,
+        "order_id": response.data.order.id,
+        "handler": async function (response) {
+            await axios.post('http://localhost:3000/purchase/updatetransactionstatus', {
+                order_id: options.order_id,
+                payment_id: response.razorpay_payment_id
+            }, { headers: { 'Authorization': token } });
+            alert("You are now a premium user");
+        }
+    };
+    const rzp1 = new Razorpay(options);
+    rzp1.open();
+    rzp1.on('payment.failed', function (response) {
+        alert('Something went wrong');
+    })
+};
