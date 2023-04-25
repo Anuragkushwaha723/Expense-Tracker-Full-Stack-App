@@ -12,10 +12,11 @@ async function submitUserInfo(e) {
             document.location.href = './login/login.html'; //change signup page to login page
         }
     } catch (error) {
-        let err = document.getElementById('error');
-        err.innerHTML = `<p id="removeError" style="color:red">${error.response.data.message}</p>`
-        // setTimeout(() => {
-        //     err.removeChild(document.getElementById('removeError'));
-        // }, 5000);
+        let errorElement = document.getElementById('error');
+        if (error.response === undefined) {
+            errorElement.innerHTML = `<p id="errorChild" style="color:red">${error.message}</p>`;
+        } else {
+            errorElement.innerHTML = `<p id="errorChild" style="color:red">${error.response.data.message}</p>`;
+        }
     }
 }
