@@ -21,7 +21,7 @@
     <div class="p-3 mb-2 bg-light bg-gradient text-black" style="height: 665px;">
         <!-- Login heading -->
         <div class="mx-auto" style="width: 100%;">
-            <h4 class="text-wrap text-center">Login</h4>
+            <h2 class="text-wrap text-center text-secondary">Login</h2>
         </div>
         <!-- form -->
         <form method="post" onsubmit="submitUserInfo(event)">
@@ -44,10 +44,14 @@
             <div class="mb-3 row">
                 <label for="submit" class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
-                    <input type="submit" class="form-control btn btn-outline-primary" value="Login" id="submit">
+                    <input type="submit" class="form-control btn btn-outline-success" value="Login" id="submit">
                 </div>
             </div>
         </form>
+        <!-- forgot password button -->
+        <div class="d-grid gap-2 col-6 mx-auto m-3" style="width: max-content;">
+            <button id="forgotPassword" class="text-center btn btn-outline-primary">Forgot Password</button>
+        </div>
         <!-- error information -->
         <div id="error">
 

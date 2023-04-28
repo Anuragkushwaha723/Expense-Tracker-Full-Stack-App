@@ -20,3 +20,7 @@ async function submitUserInfo(e) {
         }
     }
 }
+
+document.getElementById('forgotPassword').onclick = async function (e) {
+    window.location.href = '../password/password.html';
+}
