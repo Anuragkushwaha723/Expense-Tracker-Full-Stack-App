@@ -7,6 +7,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (ispremiumuser === true) {
             premiumStatusMessage();
             leaderBoardButton();
+            downloadButtonFun();
         }
         let responseData = await axios.get('http://localhost:3000/expense/get-expense', { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
@@ -76,6 +77,7 @@ document.getElementById('rzp-button1').onclick = async function (e) {
             }, { headers: { 'Authorization': token } });
             premiumStatusMessage();
             leaderBoardButton();
+            downloadButtonFun();
             localStorage.setItem('token', respData.data.token);
             alert("You are a premium user now");
         }
@@ -144,4 +146,29 @@ function initialLeaderBoardScreenClean() {
 function showLeaderBoardScreen(data) {
     let leaderList = document.getElementById('leaderboardLists');
     leaderList.innerHTML += `<li  class="m-1">Name - ${data.name} , Total Expense - ${data.totalExpense}</li>`;
+}
+function downloadButtonFun() {
+    let buttonParent = document.getElementById('expenseDownload');
+    let button = document.createElement('button');
+    let text1 = document.createTextNode('Download File');
+    button.className = "btn btn-outline-primary";
+    button.id = 'downloadFile';
+    button.append(text1);
+    buttonParent.append(button);
+    document.getElementById('downloadFile').onclick = async function (e) {
+        try {
+            e.preventDefault();
+            let respData = await axios.get('http://localhost:3000/user/download', { headers: { "Authorization": token } });
+            if (respData.status === 201) {
+                var a = document.createElement("a");
+                a.href = respData.data.fileUrl;
+                a.download = 'myexpense.csv';
+                a.click();
+            } else {
+                throw new Error('Downloading is not working due to technical errors');
+            }
+        } catch (error) {
+            errorMessage(error);
+        }
+    }
 }
