@@ -158,7 +158,7 @@ function downloadButtonFun() {
     document.getElementById('downloadFile').onclick = async function (e) {
         try {
             e.preventDefault();
-            let respData = await axios.get('http://localhost:3000/user/download', { headers: { "Authorization": token } });
+            let respData = await axios.get('http://localhost:3000/expense/download', { headers: { "Authorization": token } });
             if (respData.status === 201) {
                 var a = document.createElement("a");
                 a.href = respData.data.fileUrl;
