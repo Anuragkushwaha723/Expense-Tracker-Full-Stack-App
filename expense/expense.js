@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             premiumStatusMessage();
             leaderBoardButton();
             downloadButtonFun();
+            ListsOfDownloadButtonFunc();
         }
         let responseData = await axios.get('http://localhost:3000/expense/get-expense', { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
@@ -45,7 +46,7 @@ function showOutput(data) {
     li.append(text1);
     let button = document.createElement('button');
     let text2 = document.createTextNode('Delete');
-    button.className = "btn btn-outline-danger m-1";
+    button.className = "btn btn-danger m-1";
     button.append(text2);
     button.onclick = function () {
         removefromscreen(data);
@@ -78,6 +79,7 @@ document.getElementById('rzp-button1').onclick = async function (e) {
             premiumStatusMessage();
             leaderBoardButton();
             downloadButtonFun();
+            ListsOfDownloadButtonFunc();
             localStorage.setItem('token', respData.data.token);
             alert("You are a premium user now");
         }
@@ -100,7 +102,7 @@ function errorMessage(error) {
     }
     setTimeout(() => {
         errorElement.removeChild(document.getElementById('errorChild'));
-    }, 2000);
+    }, 5000);
 }
 function premiumStatusMessage() {
     let userTitle = document.getElementById('userPremiumTitle');
@@ -120,7 +122,7 @@ function parseJwt(token) {
 }
 function leaderBoardButton() {
     let userTitle = document.getElementById('userPremiumTitle');
-    userTitle.innerHTML = userTitle.innerHTML + `<button id="showLeaderboardId" class="btn btn-outline-success m-2">Show Leaderboard</button>`
+    userTitle.innerHTML = userTitle.innerHTML + `<button id="showLeaderboardId" class="btn btn-warning m-2">Show Leaderboard</button>`
     document.getElementById('showLeaderboardId').onclick = async function (e) {
         try {
             e.preventDefault();
@@ -139,19 +141,31 @@ function leaderboardHeading() {
     let leaderHeading = document.getElementById('leaderboardheading');
     leaderHeading.innerHTML = `<h2 class="fs-2 mb-3 m-3 text-dark">Leaderboard</h2>`;
 }
+function downloadListHeadingFun() {
+    let downloadHeading = document.getElementById('downloadheadingTitle');
+    downloadHeading.innerHTML = `<h2 class="fs-2 mb-3 m-3 text-dark">List of downloads</h2>`;
+}
 function initialLeaderBoardScreenClean() {
     let leaderList = document.getElementById('leaderboardLists');
     leaderList.innerHTML = '';
+}
+function initialDownloadListsScreenClean() {
+    let downloadLists = document.getElementById('downloadLists');
+    downloadLists.innerHTML = '';
 }
 function showLeaderBoardScreen(data) {
     let leaderList = document.getElementById('leaderboardLists');
     leaderList.innerHTML += `<li  class="m-1">Name - ${data.name} , Total Expense - ${data.totalExpense}</li>`;
 }
+function downloadListsFun(data) {
+    let downloadLists = document.getElementById('downloadLists');
+    downloadLists.innerHTML += `<li  class="m-1 text-dark">Date - ${new Date(data.date)} - <a href="${data.url}">Link</a></li>`;
+}
 function downloadButtonFun() {
     let buttonParent = document.getElementById('expenseDownload');
     let button = document.createElement('button');
     let text1 = document.createTextNode('Download File');
-    button.className = "btn btn-outline-primary";
+    button.className = "btn btn-primary";
     button.id = 'downloadFile';
     button.append(text1);
     buttonParent.append(button);
@@ -164,8 +178,37 @@ function downloadButtonFun() {
                 a.href = respData.data.fileUrl;
                 a.download = 'myexpense.csv';
                 a.click();
-            } else {
-                throw new Error('Downloading is not working due to technical errors');
+            }
+        } catch (error) {
+            errorMessage(error);
+        }
+    }
+}
+
+function ListsOfDownloadButtonFunc() {
+    let buttonParent = document.getElementById('downloadListButton');
+    let button = document.createElement('button');
+    let text1 = document.createTextNode('Show list of downloads');
+    button.className = "btn btn-info";
+    button.id = 'listOfUrls';
+    button.append(text1);
+    buttonParent.append(button);
+    document.getElementById('listOfUrls').onclick = async function (e) {
+        try {
+            e.preventDefault();
+            let respData = await axios.get('http://localhost:3000/expense/lists', { headers: { "Authorization": token } });
+            if (respData.status === 201) {
+                downloadListHeadingFun();
+                initialDownloadListsScreenClean();
+                if (respData.data.length > 0) {
+                    for (let i = 0; i < respData.data.length; i++) {
+                        downloadListsFun(respData.data[i]);
+                    }
+                } else {
+                    let downloadLists = document.getElementById('downloadLists');
+                    downloadLists.innerHTML = `<p>No download happens</p>`;
+                }
+
             }
         } catch (error) {
             errorMessage(error);
