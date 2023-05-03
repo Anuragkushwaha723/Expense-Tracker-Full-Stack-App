@@ -10,12 +10,8 @@ window.addEventListener('DOMContentLoaded', async () => {
             downloadButtonFun();
             ListsOfDownloadButtonFunc();
         }
-        let responseData = await axios.get('http://localhost:3000/expense/get-expense', { headers: { 'Authorization': token } });
-        if (responseData.status === 201) {
-            for (let i = 0; i < responseData.data.length; i++) {
-                showOutput(responseData.data[i]);
-            }
-        }
+        const page = 1;
+        getProducts(page);
     } catch (error) {
         errorMessage(error);
     }
@@ -30,9 +26,8 @@ async function submitExpense(e) {
             category: e.target.category.value
         };
         let responseData = await axios.post('http://localhost:3000/expense/add-expense', expenseDetails, { headers: { 'Authorization': token } });
-        if (responseData.status === 201) {
-            showOutput(responseData.data);
-        }
+        postProducts(responseData.data);
+
     } catch (error) {
         errorMessage(error);
     }
@@ -57,10 +52,13 @@ function showOutput(data) {
 
 async function removefromscreen(data) {
     try {
-        let responseData = await axios.delete(`http://localhost:3000/expense/delete-expense/${data.id}`, { headers: { 'Authorization': token } });
+        let page = localStorage.getItem('page');
+        let responseData = await axios.delete(`http://localhost:3000/expense/delete-expense/${data.id}?page=${page}`, { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
-            itemList.removeChild(document.getElementById(responseData.data));
+            console.log(responseData.data);
+            postProducts(responseData.data);
         }
+
     } catch (error) {
         errorMessage(error);
     }
@@ -214,4 +212,54 @@ function ListsOfDownloadButtonFunc() {
             errorMessage(error);
         }
     }
+}
+
+function showPagination(data) {
+    let { currentPage, hasCurrentPage, hasNextPage, nextpage, hasPreviousPage, previousPage, hasLastPage, lastPage } = data;
+    let pagination = document.getElementById('paginationId');
+    pagination.innerHTML = '';
+    if (hasPreviousPage) {
+        paginationButton(previousPage);
+    }
+    if (hasCurrentPage) {
+        paginationButton(currentPage);
+    }
+    if (hasNextPage) {
+        paginationButton(nextpage);
+    }
+    if (hasLastPage) {
+        paginationButton(lastPage);
+    }
+}
+function paginationButton(page) {
+    let pagination = document.getElementById('paginationId');
+    const button = document.createElement('button');
+    button.className = "btn btn-outline-primary";
+    button.append(page);
+    button.onclick = function () {
+        getProducts(page);
+    }
+    pagination.append(button);
+}
+async function getProducts(page) {
+    try {
+        let responseData = await axios.get(`http://localhost:3000/expense/get-expense?page=${page}`, { headers: { 'Authorization': token } });
+        if (responseData.status === 201) {
+            localStorage.setItem('page', page);
+            itemList.innerHTML = '';
+            for (let i = 0; i < responseData.data.product.length; i++) {
+                showOutput(responseData.data.product[i]);
+            }
+            showPagination(responseData.data.pageData);
+        }
+    } catch (error) {
+        errorMessage(error);
+    }
+}
+async function postProducts(data) {
+    itemList.innerHTML = '';
+    for (let i = 0; i < data.product.length; i++) {
+        showOutput(data.product[i]);
+    }
+    showPagination(data.pageData)
 }
