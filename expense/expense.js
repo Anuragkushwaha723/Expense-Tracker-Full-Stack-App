@@ -25,7 +25,8 @@ async function submitExpense(e) {
             description: e.target.description.value,
             category: e.target.category.value
         };
-        let responseData = await axios.post('http://localhost:3000/expense/add-expense', expenseDetails, { headers: { 'Authorization': token } });
+        let itemsPerPage = localStorage.getItem('itemsPerPage');
+        let responseData = await axios.post(`http://localhost:3000/expense/add-expense?itemsPerPage=${itemsPerPage}`, expenseDetails, { headers: { 'Authorization': token } });
         postProducts(responseData.data);
 
     } catch (error) {
@@ -53,9 +54,9 @@ function showOutput(data) {
 async function removefromscreen(data) {
     try {
         let page = localStorage.getItem('page');
-        let responseData = await axios.delete(`http://localhost:3000/expense/delete-expense/${data.id}?page=${page}`, { headers: { 'Authorization': token } });
+        let itemsPerPage = localStorage.getItem('itemsPerPage');
+        let responseData = await axios.delete(`http://localhost:3000/expense/delete-expense/${data.id}?page=${page}&itemsPerPage=${itemsPerPage}`, { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
-            console.log(responseData.data);
             postProducts(responseData.data);
         }
 
@@ -243,7 +244,8 @@ function paginationButton(page) {
 }
 async function getProducts(page) {
     try {
-        let responseData = await axios.get(`http://localhost:3000/expense/get-expense?page=${page}`, { headers: { 'Authorization': token } });
+        let itemsPerPage = localStorage.getItem('itemsPerPage');
+        let responseData = await axios.get(`http://localhost:3000/expense/get-expense?page=${page}&itemsPerPage=${itemsPerPage}`, { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
             localStorage.setItem('page', page);
             itemList.innerHTML = '';
@@ -262,4 +264,9 @@ async function postProducts(data) {
         showOutput(data.product[i]);
     }
     showPagination(data.pageData)
+}
+
+document.getElementById('itemsPerPageId').onclick = async function (e) {
+    e.preventDefault();
+    localStorage.setItem('itemsPerPage', e.target.value);
 }
