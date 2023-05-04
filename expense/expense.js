@@ -1,5 +1,6 @@
 const itemList = document.getElementById('itemList');
 let token = localStorage.getItem('token');
+// dom content loaded function
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         let decodedToken = parseJwt(token);
@@ -15,7 +16,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         errorMessage(error);
     }
-})
+});
+//post data form function
 async function submitExpense(e) {
     try {
         e.preventDefault();
@@ -33,7 +35,7 @@ async function submitExpense(e) {
         errorMessage(error);
     }
 };
-
+// show output of expenses in the window
 function showOutput(data) {
     let li = document.createElement('li');
     li.className = "m-1";
@@ -50,7 +52,7 @@ function showOutput(data) {
     li.append(button);
     itemList.append(li);
 }
-
+//remove element from the ui and database
 async function removefromscreen(data) {
     try {
         let page = localStorage.getItem('page');
@@ -64,7 +66,7 @@ async function removefromscreen(data) {
         errorMessage(error);
     }
 }
-
+// razor pay button 
 document.getElementById('rzp-button1').onclick = async function (e) {
     let response = await axios.get('http://localhost:3000/purchase/purchasemembership', { headers: { 'Authorization': token } });
     var options = {
@@ -92,6 +94,7 @@ document.getElementById('rzp-button1').onclick = async function (e) {
         alert('Something went wrong');
     })
 };
+// showing error message
 function errorMessage(error) {
     let errorElement = document.getElementById('error');
     if (error.response === undefined) {
@@ -103,13 +106,14 @@ function errorMessage(error) {
         errorElement.removeChild(document.getElementById('errorChild'));
     }, 5000);
 }
+// showing premium message and button
 function premiumStatusMessage() {
     let userTitle = document.getElementById('userPremiumTitle');
     userTitle.innerHTML = "You are a premium user";
     let rzpButton = document.getElementById('rzp-button1');
     rzpButton.style.visibility = 'hidden';
 }
-
+// parsing token function
 function parseJwt(token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -119,6 +123,7 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
+//leader board functionality
 function leaderBoardButton() {
     let userTitle = document.getElementById('userPremiumTitle');
     userTitle.innerHTML = userTitle.innerHTML + `<button id="showLeaderboardId" class="btn btn-warning m-2">Show Leaderboard</button>`
@@ -136,30 +141,37 @@ function leaderBoardButton() {
         }
     };
 }
+//leader board heading title function 
 function leaderboardHeading() {
     let leaderHeading = document.getElementById('leaderboardheading');
     leaderHeading.innerHTML = `<h2 class="fs-2 mb-3 m-3 text-dark">Leaderboard</h2>`;
 }
+//list of download heading function
 function downloadListHeadingFun() {
     let downloadHeading = document.getElementById('downloadheadingTitle');
     downloadHeading.innerHTML = `<h2 class="fs-2 mb-3 m-3 text-dark">List of downloads</h2>`;
 }
+// clear screen for leaderboard lists function
 function initialLeaderBoardScreenClean() {
     let leaderList = document.getElementById('leaderboardLists');
     leaderList.innerHTML = '';
 }
+// clear screen for list of download users
 function initialDownloadListsScreenClean() {
     let downloadLists = document.getElementById('downloadLists');
     downloadLists.innerHTML = '';
 }
+// leaderboard lists data
 function showLeaderBoardScreen(data) {
     let leaderList = document.getElementById('leaderboardLists');
     leaderList.innerHTML += `<li  class="m-1">Name - ${data.name} , Total Expense - ${data.totalExpense}</li>`;
 }
+// download lists of expenses data
 function downloadListsFun(data) {
     let downloadLists = document.getElementById('downloadLists');
     downloadLists.innerHTML += `<li  class="m-1 text-dark">Date - ${new Date(data.date)} - <a href="${data.url}">Link</a></li>`;
 }
+// download of all expenses through S3 button 
 function downloadButtonFun() {
     let buttonParent = document.getElementById('expenseDownload');
     let button = document.createElement('button');
@@ -183,7 +195,7 @@ function downloadButtonFun() {
         }
     }
 }
-
+//list of ownload of expenses button
 function ListsOfDownloadButtonFunc() {
     let buttonParent = document.getElementById('downloadListButton');
     let button = document.createElement('button');
@@ -214,7 +226,7 @@ function ListsOfDownloadButtonFunc() {
         }
     }
 }
-
+//Pagination 
 function showPagination(data) {
     let { currentPage, hasCurrentPage, hasNextPage, nextpage, hasPreviousPage, previousPage, hasLastPage, lastPage } = data;
     let pagination = document.getElementById('paginationId');
@@ -232,6 +244,7 @@ function showPagination(data) {
         paginationButton(lastPage);
     }
 }
+//pagination all buttons creating here
 function paginationButton(page) {
     let pagination = document.getElementById('paginationId');
     const button = document.createElement('button');
@@ -242,6 +255,7 @@ function paginationButton(page) {
     }
     pagination.append(button);
 }
+// get all  the expenses for dom content loaded
 async function getProducts(page) {
     try {
         let itemsPerPage = localStorage.getItem('itemsPerPage');
@@ -258,6 +272,7 @@ async function getProducts(page) {
         errorMessage(error);
     }
 }
+// get all data for expenses of delete and post 
 async function postProducts(data) {
     itemList.innerHTML = '';
     for (let i = 0; i < data.product.length; i++) {
@@ -265,7 +280,7 @@ async function postProducts(data) {
     }
     showPagination(data.pageData)
 }
-
+//set the value of page in loacalstorage
 document.getElementById('itemsPerPageId').onclick = async function (e) {
     e.preventDefault();
     localStorage.setItem('itemsPerPage', e.target.value);
